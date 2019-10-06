@@ -1,0 +1,267 @@
+ <!DOCTYPE html>
+ <html lang="en">
+
+ <head>
+   <meta charset="UTF-8">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.css" />
+   <script type="text/javascript" src="https://cdn.datatables.net/r/dt/dt-1.10.9/datatables.min.js"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.0/lity.min.css">
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lity/2.4.0/lity.min.js"></script>
+   <title>UVA </title>
+ </head>
+<style>
+a {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+}
+a:hover{
+  background: greenyellow;
+  font-size: 16px;
+  font-weight: bold;
+}
+td.highlight {
+    background-color: greenyellow !important;
+}
+</style>
+ <body>
+   <div class="container" style="padding:50px 0px;">
+     <div>
+        <h3>Toggle column:</h3> 
+        <p>
+          <a class="toggle-vis" data-column="1">Week 1 Score</a> - 
+          <a class="toggle-vis" data-column="2">Week 2 Score</a> - 
+          <a class="toggle-vis" data-column="3">Week 3 Score</a> - 
+          <a class="toggle-vis" data-column="4">Overall Score</a>
+        </p>
+        <p>
+          <a class="toggle-vis" data-column="5">Info</a>(Degree, Major/Field of Study, Age, Gender) - 
+          <a class="toggle-vis" data-column="9">General Questions</a>
+        </p>
+        <p>
+            <a class="toggle-vis" data-column="24">Week 1</a>
+            <a class="toggle-vis" data-column="34">Week 2</a>
+            <a class="toggle-vis" data-column="42">Week 3</a>
+            <a class="toggle-vis" data-column="50">Week 4</a>
+        </p>
+     </div>
+     <table id="uva-table" class="display" cellspacing="0" width="100%">
+       <thead>
+         <tr id="table-title">
+         </tr>
+       </thead>
+
+     </table>
+   </div>
+ </body>
+
+ </html>
+ <script type="text/javascript">
+   $(document).ready(function () {
+
+     var tableTitle = ['#', 'Week 1 Score', 'Week 2 Score', 'Week 3 Score', 'Overall Score',
+       'Degree(s) Completed', 'Major/Field of Study', 'Age', 'Gender',
+       'How did you hear about the Fellowship?',
+       'Which of the following currently describes you best?',
+       'Current Role/Job', 'Current Occupation (select up to 3)',
+       'Current Seniority Level ', 'Salary Range', 'Why Change Career?',
+       'Why Change? (Type)', 'What&sbquo;s been holding you back?',
+       'What&sbquo;s been holding you back? (Type)',
+       'Other potential career paths you are considering?',
+       'What are you hoping to get out of this Fellowship?',
+       'Would you like to be a Team Lead?',
+       'How quick are you to speak up in a small group setting?',
+       'How much group brainstorming have you done in the past?',
+       'Week 1 Feedback',
+       'How was our communication leading up to the start of the program? Did you feel like you knew what was going on?',
+       'How do you feel about the technology platforms thus far? (Teachable, Slack, Google Hangouts, Google Docs) Any feedback?',
+       'How did you feel about the amount of work we asked you to complete this week? ',
+       'Care to elaborate on how you feel about the workload this week?',
+       'Which module was your favorite? Why?',
+       'Which module did you find least valuable? Why?',
+       'Overall, what went well?', 'Overall, what could be improved on?',
+       'How satisfied are you with the Fellowship thus far?',
+       'Week 2 feedback',
+       'How did you feel about the amount of work we asked you to complete this week? ',
+       'Can you elaborate on how you feel about the workload this week?',
+       'Which module was your favorite? Why?',
+       'Which module did you find least valuable? Why?',
+       'Overall, what went well?', 'Overall, what could be improved on?',
+       'How satisfied are you with the bootcamp thus far?',
+       'Week 3 Feedback',
+       'How did you feel about the amount of work we asked you to complete this week? ',
+       'Can you elaborate on how you feel about the workload this week?',
+       'Which module was your favorite? Why?',
+       'Which module did you find least valuable? Why?',
+       'Overall, what went well?', 'Overall, what could be improved on?',
+       'How satisfied are you with the bootcamp thus far?',
+       'Week 4 and Final',
+       'How did you feel about the amount of work we asked you to complete this week? ',
+       'Can you elaborate on how you feel about the workload this week?',
+       'Which module was your favorite? Why?',
+       'Which module did you find least valuable? Why?',
+       'Overall, what about this week went well?',
+       'Overall, what about this week could be improved?',
+       'How did you like the following tech platforms you used (for the purposes of this program)? [Slack]',
+       'How did you like the following tech platforms you used (for the purposes of this program)? [Teachable (this was the online course software)]',
+       'How did you like the following tech platforms you used (for the purposes of this program)? [Google Hangouts (video conference)]',
+       'How did you like the following tech platforms you used (for the purposes of this program)? [Google Docs and Slides]',
+       'Any additional feedback for us about the tech we used to offer the Fellowship? What would make the experience easier/better?',
+       'Overall, what did you think about the workload for the program? ',
+       'How do you feel about the length of the program? Would you change anything about it?',
+       'What did you find most valuable about your Fellowship experience?',
+       'What did you find least valuable about your Fellowship experience?',
+       'Did you get what you were hoping for from the Fellowship?',
+       'Do you feel like you built lasting relationships with fellow alumni?',
+       'How much effort do you feel you put into the Fellowship?',
+       'How likely are you to recommend the Fellowship to a friend who&sbquo;s in need of a career change?',
+       'Can you leave us a quick one or two sentence testimonial about your experience that we can share with the UVA Alumni Association and future participants?',
+       'Any other parting thoughts/feedback for us?',
+       'Overall, how satisfied are you with the Fellowship?',
+       'How prepared do you feel to make a successful career change?'
+     ]
+
+     var tableTitleHtml = tableTitle.map((x, idx) =>
+      //  `<th id='title-${idx}' >[${idx}] ${x}</th>`
+      `<th id='title-${idx}' > ${x}</th>`
+     )
+     $('#table-title').html(tableTitleHtml)
+
+     var arrayReturn = [];
+     $.ajax({
+       type: 'GET',
+       url: "./full_participant.json",
+       async: false,
+       dataType: 'json',
+       success: function (data) {
+         // console.log(data[2].data)
+         for (var i = 0, len = data[2].data.length; i < len; i++) {
+           var desc = data[2].data[i];
+           //  console.log(desc)
+           arrayReturn.push([desc.id, desc.b, desc.c, desc.d, desc.e, desc.g, desc.h, desc.i, desc.j, desc.k,
+             desc.l, desc.m, desc.n, desc.o, desc.p, desc.q, desc.r, desc.s, desc.t, desc.u, desc.v, desc
+             .w, desc.x, desc.y, desc.aaa, desc.aab, desc.aac, desc.aad, desc.aae, desc.aaf, desc.aag,
+             desc.aah, desc.aai, desc.aaj, desc.aal, desc.aam, desc.aan, desc.aao, desc.aap, desc.aaq,
+             desc.aar, desc.aas, desc.aau, desc.aav, desc.aaw, desc.aax, desc.aay, desc.aaz, desc.bba,
+             desc.bbb, desc.bbd, desc.bbe, desc.bbf, desc.bbg, desc.bbh, desc.bbi, desc.bbj, desc.bbk,
+             desc.bbl, desc.bbm, desc.bbn, desc.bbo, desc.bbp, desc.bbq, desc.bbr, desc.bbs, desc.bbt,
+             desc.bbu, desc.bbv, desc.bbw, desc.bbx, desc.bby, desc.bbz, desc.cca
+           ]);
+         }
+         inittable(arrayReturn);
+       }
+     });
+
+     function inittable(data) {
+       //console.log(data);
+       var table = $('#uva-table').DataTable({
+         "aaData": data,
+         "dataSrc": function (json) {
+           // console.log(json);
+           for (var i = 0, ien = json.data.length; i < ien; i++) {
+             json.data[i][0] = '<a href="/message/' + json.data[i][0] + '>View message</a>';
+           }
+           return json.data;
+         },
+          responsive: true,
+          "autoWidth": true,
+          "lengthMenu": [
+              [5, 10, 25, 50, -1],
+              [5, 10, 25, 50, "All"]
+          ],
+       });
+
+       $('a.toggle-vis').on('click', function (e) {
+         e.preventDefault();
+
+         // Get the column API object
+         var column = table.column($(this).attr('data-column'));
+
+        switch ( $(this).attr('data-column')) {
+          case '5':
+            for ( i = 5; i < 9; i++ ) {
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '6': // Week 1 data
+            for ( i = 6; i < 9; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '9': // Week 1 data
+            for ( i = 9; i < 24; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '24': // Week 1 data
+            for ( i = 24; i < 34; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '34': // Week 1 data
+            for ( i = 34; i < 42; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '42': // Week 1 data
+            for ( i = 42; i < 50; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          case '50': // Week 1 data
+            for ( i = 50; i < 74; i++ ){
+              column = table.column(i)
+              column.visible(!column.visible());
+            }
+            break;
+          default:
+            column.visible(!column.visible());
+        }
+         // Toggle the visibility
+       });
+
+       $('#uva-table tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = table.cell(this).index().column;
+ 
+            $( table.cells().nodes() ).removeClass( 'highlight' );
+            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
+
+     }
+
+    //  apply th style
+    for ( var i = 5; i < 74; i++ )
+      $(`#title-${i}`).css('color',' white')
+    for ( var i = 5; i < 9; i++ )
+      $(`#title-${i}`).css('background', 'red')
+    for ( var i = 9; i < 24; i++ )
+      $(`#title-${i}`).css('background', 'orange')
+    for ( var i = 24; i < 34; i++ ){ //wk 1
+      $(`#title-${i}`).css('background', 'yellow')
+      $(`#title-${i}`).css('color',' black')
+    }
+      $(`#title-${i}`).css('background', 'yellow')
+    for ( var i = 34; i < 42; i++ )
+      $(`#title-${i}`).css('background', 'green')
+    for ( var i = 42; i < 50; i++ )
+      $(`#title-${i}`).css('background', 'blue')
+    for ( var i = 50; i < 74; i++ )
+      $(`#title-${i}`).css('background', 'purple')
+
+
+
+
+
+
+   });
+ </script>
